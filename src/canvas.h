@@ -13,7 +13,33 @@
 
 namespace agl
 {
-   enum PrimitiveType {UNDEFINED, LINES, TRIANGLES};
+   enum PrimitiveType
+   {
+      UNDEFINED,
+      LINES,
+      TRIANGLES
+   };
+
+   struct Vertex
+   {
+      int x;
+      int y;
+      Pixel color;
+   };
+
+   // struct Line
+   // {
+   //    Vertex p1;
+   //    Vertex p2;
+   // };
+
+   // struct Triangle
+   // {
+   //    Vertex p1;
+   //    Vertex p2;
+   //    Vertex p3;
+   // };
+
    class Canvas
    {
    public:
@@ -21,7 +47,7 @@ namespace agl
       virtual ~Canvas();
 
       // Save to file
-      void save(const std::string& filename);
+      void save(const std::string &filename);
 
       // Draw primitives with a given type (either LINES or TRIANGLES)
       // For example, the following draws a red line followed by a green line
@@ -48,9 +74,10 @@ namespace agl
 
    private:
       Image _canvas;
+      std::vector<Vertex> verticesToDraw;
+      Pixel currentColor;
+      PrimitiveType currentType;
    };
 }
 
 #endif
-
-
