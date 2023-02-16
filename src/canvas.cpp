@@ -27,9 +27,8 @@ void Canvas::begin(PrimitiveType type)
    currentType = type;
 }
 
-Pixel interpolateColor(Pixel startColor, Pixel endColor, float t)
+Pixel interpolateLineColor(Pixel startColor, Pixel endColor, float t)
 {
-   // std::cout << t << std::endl;
    Pixel newColor = {
        static_cast<unsigned char>(startColor.r * (1 - t) + endColor.r * (t)),
        static_cast<unsigned char>(startColor.g * (1 - t) + endColor.g * (t)),
@@ -54,11 +53,10 @@ void drawLineLow(Vertex a, Vertex b, Image *canvas)
    int f = 2 * h - w;
    for (int x = a.x; x <= b.x; x++)
    {
-      // color interpolation
       float drawnDist = sqrt(pow((x - a.x), 2) + pow((y - a.y), 2));
       float t = drawnDist / dist;
 
-      canvas->set(y, x, interpolateColor(a.color, b.color, t));
+      canvas->set(y, x, interpolateLineColor(a.color, b.color, t));
       if (f > 0)
       {
          y += dy;
@@ -90,10 +88,7 @@ void drawLineHigh(Vertex a, Vertex b, Image *canvas)
       float drawnDist = sqrt(pow((x - a.x), 2) + pow((y - a.y), 2));
       float t = drawnDist / dist;
 
-      // std::cout << "dist: " << dist << " drawn: " << drawnDist << std::endl;
-      // std::cout << "set r: " << y << "c: " << x << std::endl;
-      // std::cout << "r: " << newColor.r << "g: " << newColor.g << "b: " << newColor.b << std::endl;
-      canvas->set(y, x, interpolateColor(a.color, b.color, t));
+      canvas->set(y, x, interpolateLineColor(a.color, b.color, t));
       if (f > 0)
       {
          x += dx;
@@ -105,9 +100,6 @@ void drawLineHigh(Vertex a, Vertex b, Image *canvas)
 
 void drawLine(Vertex a, Vertex b, Image *canvas)
 {
-   // std::cout << "drawLine" << std::endl;
-   // std::cout << "ax " << a.x << " ay: " << a.y << std::endl;
-   // std::cout << "bx " << b.x << " by: " << b.y << std::endl;
    Vertex temp;
 
    int w = b.x - a.x;
@@ -134,17 +126,50 @@ void drawLine(Vertex a, Vertex b, Image *canvas)
    }
 }
 
-// draw everything to canvas
+void drawTriangle(Vertex a, Vertex b, Vertex c, Image *canvas)
+{
+   int minX = std::min({a.x, b.x, c.x});
+   int maxX = std::max({a.x, b.x, c.x});
+   int minY = std::min({a.y, b.y, c.y});
+   int maxY = std::max({a.y, b.y, c.y});
+
+   for (int x = minX; x <= maxX; x++)
+   {
+      for (int y = minY; y <= maxY; y++)
+      {
+         float alpha = float((b.y - c.y) * x + (c.x - b.x) * y + b.x * c.y - c.x * b.y) /
+                       float((b.y - c.y) * a.x + (c.x - b.x) * a.x + b.x * c.y - c.x * b.y);
+
+         float beta = float((c.y - a.y) * x + (a.x - c.x) * y + c.x * a.y - c.y * a.x) /
+                      float((c.y - a.y) * b.x + (a.x - c.x) * b.x + c.x * a.y - c.y * a.x);
+
+         float gamma = float((a.y - b.y) * x + (b.x - a.x) * y + a.x * b.y - b.x * a.y) /
+                       float((a.y - b.y) * c.x + (b.x - a.x) * c.x + a.x * b.y - b.x * a.y);
+
+         // TODO: fix me
+         if (alpha > 0 && beta > 0 && gamma > 0)
+         {
+            Pixel color = {static_cast<unsigned char>(alpha * a.color.r + beta * b.color.r + gamma * c.color.r),
+                           static_cast<unsigned char>(alpha * a.color.g + beta * b.color.g + gamma * c.color.g),
+                           static_cast<unsigned char>(alpha * a.color.b + beta * b.color.b + gamma * c.color.b)};
+
+            canvas->set(y, x, color);
+         }
+      }
+   }
+}
+
 void Canvas::end()
 {
-   if (verticesToDraw.empty())
+   int numVertices = verticesToDraw.size();
+
+   if (numVertices == 0)
    {
       return;
    }
 
    if (currentType == LINES)
    {
-      int numVertices = verticesToDraw.size();
       if (numVertices % 2 != 0)
       {
          std::cout << "#vertices for line drawing not divisible by 2" << std::endl;
@@ -157,12 +182,28 @@ void Canvas::end()
          Vertex b = verticesToDraw[(2 * i) + 1];
          drawLine(a, b, &_canvas);
       }
-
-      verticesToDraw.clear();
    }
+
+   if (currentType == TRIANGLES)
+   {
+      if (numVertices % 3 != 0)
+      {
+         std::cout << "#vertices for triangle drawing not divisible by 3" << std::endl;
+         return;
+      }
+
+      for (int i = 0; i < numVertices / 3; i++)
+      {
+         Vertex a = verticesToDraw[3 * i];
+         Vertex b = verticesToDraw[(3 * i) + 1];
+         Vertex c = verticesToDraw[(3 * i) + 2];
+         drawTriangle(a, b, c, &_canvas);
+      }
+   }
+
+   verticesToDraw.clear();
 }
 
-// add vertex onto verticesToDraw
 void Canvas::vertex(int x, int y)
 {
    Vertex vertex = {x, y, currentColor};
