@@ -27,19 +27,6 @@ namespace agl
       Pixel color;
    };
 
-   // struct Line
-   // {
-   //    Vertex p1;
-   //    Vertex p2;
-   // };
-
-   // struct Triangle
-   // {
-   //    Vertex p1;
-   //    Vertex p2;
-   //    Vertex p3;
-   // };
-
    class Canvas
    {
    public:

@@ -18,8 +18,8 @@ int main(int argc, char **argv)
 {
    Canvas drawer(100, 100);
 
-   drawer.color(255, 255, 255);
-   test_line(drawer, 0, 50, 100, 50, "horizontal-line.png");
+   // drawer.color(255, 255, 255);
+   // test_line(drawer, 0, 50, 100, 50, "horizontal-line.png");
    // test_line(drawer, 50, 0, 50, 100, "vertical-line.png");
    // test_line(drawer, 0, 0, 100, 100, "diagonal-line-1.png");     // slope = 1
    // test_line(drawer, 25, 10, 75, 25, "h-lessthan-w-line-1.png"); // slope H < W
@@ -29,14 +29,14 @@ int main(int argc, char **argv)
    // test_line(drawer, 25, 90, 75, 25, "w-lessthan-h-line-2.png"); // slope W < H
 
    // // test line interpolation
-   // drawer.background(0, 0, 0);
-   // drawer.begin(LINES);
-   // drawer.color(255, 0, 255);
-   // drawer.vertex(0, 0);
-   // drawer.color(0, 255, 255);
-   // drawer.vertex(100, 100);
-   // drawer.end();
-   // drawer.save("line-color-interpolation.png");
+   drawer.background(0, 0, 0);
+   drawer.begin(LINES);
+   drawer.color(255, 0, 255);
+   drawer.vertex(0, 0);
+   drawer.color(0, 255, 255);
+   drawer.vertex(100, 100);
+   drawer.end();
+   drawer.save("line-color-interpolation.png");
 
    // // test triangle with interpolation
    // drawer.background(0, 0, 0);
