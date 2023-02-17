@@ -1,7 +1,7 @@
 /*-----------------------------------------------
- * Author:
- * Date:
- * Description:
+ * Author: Derrick Zhen
+ * Date: 2/16/23
+ * Description: This is the header file for the Canvas class and Vertex struct
  ----------------------------------------------*/
 
 #ifndef canvas_H_

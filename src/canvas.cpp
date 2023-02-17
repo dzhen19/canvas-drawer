@@ -140,14 +140,10 @@ void drawTriangle(Vertex a, Vertex b, Vertex c, Image *canvas)
          float alpha = float((b.y - c.y) * x + (c.x - b.x) * y + b.x * c.y - c.x * b.y) /
                        float((b.y - c.y) * a.x + (c.x - b.x) * a.y + b.x * c.y - c.x * b.y);
 
-         // float beta = float((c.y - a.y) * x + (a.x - c.x) * y + c.x * a.y - c.y * a.x) /
-         //              float((c.y - a.y) * b.x + (a.x - c.x) * b.x + c.x * a.y - c.y * a.x);
-
          float gamma = float((a.y - b.y) * x + (b.x - a.x) * y + a.x * b.y - b.x * a.y) /
                        float((a.y - b.y) * c.x + (b.x - a.x) * c.y + a.x * b.y - b.x * a.y);
 
          float beta = 1 - alpha - gamma;
-         std::cout << "alpha: " << alpha << " beta: " << beta << " gamma: " << gamma << std::endl;
 
          if (alpha > 0 && beta > 0 && gamma > 0)
          {
