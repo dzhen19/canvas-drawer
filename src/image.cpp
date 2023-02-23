@@ -146,6 +146,10 @@ namespace agl
 
    void Image::set(int row, int col, const Pixel &color)
    {
+      if (row < 0 || col < 0 || row > image_height || col > image_width)
+      {
+         return;
+      }
       int index = 3 * (row * image_width + col);
       image_data[index] = color.r;
       image_data[index + 1] = color.g;

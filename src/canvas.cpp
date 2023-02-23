@@ -162,28 +162,71 @@ void drawPoint(Vertex a, Image *canvas)
    canvas->set(a.y, a.x, a.color);
 }
 
-// TODO: make me variable color / radius
-void drawCircle(Vertex a, Image *canvas)
+void drawCircle(Vertex a, int r, Image *canvas)
 {
-   int radius = 100;
-   Pixel color = {255, 255, 255};
-
-   int minX = a.x - radius;
-   int minY = a.y - radius;
-   int maxX = a.x + radius;
-   int maxY = a.y + radius;
+   int minX = a.x - r;
+   int minY = a.y - r;
+   int maxX = a.x + r;
+   int maxY = a.y + r;
 
    for (int x = minX; x <= maxX; x++)
    {
       for (int y = minY; y <= maxY; y++)
       {
          float distanceFromOrigin = sqrt((a.x - x) * (a.x - x) + (a.y - y) * (a.y - y));
-         if (distanceFromOrigin < radius)
+         if (distanceFromOrigin < r)
          {
-            canvas->set(y, x, color);
+            canvas->set(y, x, a.color);
          }
       }
    }
+}
+
+void drawConvexPolygon(vector<Vertex> verticesToDraw, Image *canvas)
+{
+   int numVertices = verticesToDraw.size();
+   int a = 0;
+   int b = 1;
+   int c = 2;
+   // for n points, rasterize using n-2 triangles
+   for (int i = 0; i < numVertices - 2; i++)
+   {
+      drawTriangle(verticesToDraw[a], verticesToDraw[b], verticesToDraw[c], canvas);
+      b++;
+      c++;
+   }
+}
+
+// not a primitive, shorthand for drawing a bunch of lines
+// TODO: figure out why this is segfaulting
+void Canvas::drawRose()
+{
+   int n = 8;
+   int d = 97;
+   int x, y, theta;
+   float k, r;
+
+   begin(LINES);
+   color(255, 0, 0);
+   // for (theta = 0; theta < 361; theta++)
+   // {
+   //    k = (float)theta * (float)d * (M_PI / 180);
+   //    r = 300 * sin(n * k);
+   //    x = r * cos(k) + 500;
+   //    y = r * sin(k) + 500;
+   //    vertex(x, y);
+   // }
+
+   color(0, 255, 0);
+   for (theta = 0; theta < 360; theta++)
+   {
+      k = (float)theta * (M_PI / 180);
+      r = 300 * sin(n * k);
+      x = r * cos(k) + 500;
+      y = r * sin(k) + 500;
+      vertex(x, y);
+   }
+   end();
 }
 
 void Canvas::end()
@@ -242,17 +285,37 @@ void Canvas::end()
       for (int i = 0; i < numVertices; i++)
       {
          Vertex a = verticesToDraw[i];
-         drawCircle(a, &_canvas);
+         int r = radiiToDraw[i];
+         drawCircle(a, r, &_canvas);
       }
    }
 
+   // points are read in clockwise manner
+   // draws a single polygon per begin() + end() block
+   if (currentType == CONVEXPOLYGON)
+   {
+      drawConvexPolygon(verticesToDraw, &_canvas);
+   }
+
    verticesToDraw.clear();
+   radiiToDraw.clear();
 }
 
 void Canvas::vertex(int x, int y)
 {
+   // std::cout << x << " " << y << std::endl;
    Vertex vertex = {x, y, currentColor};
    verticesToDraw.push_back(vertex);
+}
+
+void Canvas::radius(int r)
+{
+   if (currentType != CIRCLES)
+   {
+      std::cout << "Must be drawing circles to specify radius!" << std::endl;
+      return;
+   }
+   radiiToDraw.push_back(r);
 }
 
 void Canvas::color(unsigned char r, unsigned char g, unsigned char b)

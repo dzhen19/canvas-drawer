@@ -19,7 +19,8 @@ namespace agl
       LINES,
       TRIANGLES,
       POINTS,
-      CIRCLES
+      CIRCLES,
+      CONVEXPOLYGON,
    };
 
    enum DirectionType
@@ -61,18 +62,23 @@ namespace agl
       // x corresponds to the column; y to the row
       void vertex(int x, int y);
 
+      void radius(int r);
+
       // Specify a color. Color components are in range [0,255]
       void color(unsigned char r, unsigned char g, unsigned char b);
 
       // Fill the canvas with the given background color
       void background(unsigned char r, unsigned char g, unsigned char b);
 
-      // TODO: Fill the canvas with a gradient
+      // Fill the canvas with gradient
       void background(Pixel color1, Pixel color2, DirectionType direction);
+
+      void drawRose();
 
    private:
       Image _canvas;
       std::vector<Vertex> verticesToDraw;
+      std::vector<int> radiiToDraw;
       Pixel currentColor;
       PrimitiveType currentType;
    };

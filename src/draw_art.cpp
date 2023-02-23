@@ -1,16 +1,26 @@
 #include <iostream>
+#include <math.h>
 #include "canvas.h"
 using namespace std;
 using namespace agl;
 
-Pixel getRandomColor()
+Pixel getRandomColor(bool monochrome)
 {
+   Pixel randomColor;
    float r1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
    float r2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
    float r3 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-   Pixel randomColor = {static_cast<unsigned char>(r1 * 255),
-                        static_cast<unsigned char>(r2 * 255),
-                        static_cast<unsigned char>(r3 * 255)};
+
+   randomColor = {static_cast<unsigned char>(r1 * 255),
+                  static_cast<unsigned char>(r2 * 255),
+                  static_cast<unsigned char>(r3 * 255)};
+
+   if (monochrome)
+   {
+      randomColor = {static_cast<unsigned char>(r1 * 255),
+                     static_cast<unsigned char>(r1 * 255),
+                     static_cast<unsigned char>(r1 * 255)};
+   }
    return randomColor;
 }
 
@@ -26,31 +36,88 @@ Vertex getRandomPoint(int maxX, int maxY)
    return randomPoint;
 }
 
+// get n points along the unit circle (for n-1 sided polygon)
+void drawUnitCirclePoints(int n, int w, int h, Canvas *drawer)
+{
+   int radius = min(w, h) / 2 - 50;
+   int xOffset = w / 2;
+   int yOffset = h / 2;
+   // counter is purely for coloring
+   int counter = 0;
+   float x;
+   float y;
+
+   drawer->begin(CONVEXPOLYGON);
+   Pixel randomColor = getRandomColor(false);
+   drawer->color(randomColor.r, randomColor.g, randomColor.b);
+   for (int i = 0; i < n; i++)
+   {
+      x = (sin((float)i / (float)n * 2 * M_PI) * radius) + xOffset;
+      y = (cos((float)i / (float)n * 2 * M_PI) * radius) + yOffset;
+      // std::cout << "x: " << x << ", y: " << y << std::endl;
+      if (counter == 2)
+      {
+         // set color so that every triangle is differently colored
+         randomColor = getRandomColor(false);
+         drawer->color(randomColor.r, randomColor.g, randomColor.b);
+         counter = 0;
+      }
+      drawer->vertex(x, y);
+      counter++;
+   }
+   drawer->end();
+}
+
 int main(int argc, char **argv)
 {
-   int w = 500;
-   int h = 500;
+   int w = 400;
+   int h = 300;
    Canvas drawer(w, h);
    // your code here
-   Pixel color1 = {0, 0, 0};
-   Pixel color2 = {0, 0, 0};
+   Pixel color1 = {16, 0, 43};
+   Pixel color2 = {90, 24, 154};
    drawer.background(color1, color2, VERTICAL);
 
-   // // draw points demo
-   // drawer.begin(POINTS);
-   // for (int i = 0; i < 100; i++)
-   // {
-   //    Pixel randomColor = getRandomColor();
-   //    drawer.color(randomColor.r, randomColor.g, randomColor.b);
-   //    Vertex p = getRandomPoint(w, h);
-   //    drawer.vertex(p.x, p.y);
-   // }
+   // draw points demo
+   drawer.begin(POINTS);
+   for (int i = 0; i < 1000; i++)
+   {
+      Pixel randomColor = getRandomColor(true);
+      drawer.color(randomColor.r, randomColor.g, randomColor.b);
+      Vertex p = getRandomPoint(w, h);
+      drawer.vertex(p.x, p.y);
+   }
+   drawer.end();
+   drawer.save("space.png");
 
-   // circle
+   int circleRadius = 100;
+   int numSubCircles = 5;
+   int minSubCircleRadius = 1;
+   int pixDecrement = (circleRadius - minSubCircleRadius) / numSubCircles;
+
+   // draw circle demo
    drawer.begin(CIRCLES);
-   drawer.vertex(250, 250);
-   drawer.end();
+   for (int i = 0; i < 100; i++)
+   {
+      Pixel randomColor;
+      Vertex p = getRandomPoint(w, h);
 
+      for (int j = 0; j < numSubCircles; j++)
+      {
+         randomColor = getRandomColor(true);
+         drawer.color(randomColor.r, randomColor.g, randomColor.b);
+         drawer.vertex(p.x, p.y);
+         drawer.radius(circleRadius - pixDecrement * j);
+      }
+   }
    drawer.end();
-   drawer.save("art.png");
+   drawer.save("space1.png");
+
+   // draw convex polygon demo
+   drawer.background(0, 0, 0);
+   drawUnitCirclePoints(8, w, h, &drawer);
+   drawer.save("polygon.png");
+
+   // draw rose demo
+   // drawer.drawRose();
 }
