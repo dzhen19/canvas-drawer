@@ -28,22 +28,29 @@ Vertex getRandomPoint(int maxX, int maxY)
 
 int main(int argc, char **argv)
 {
-   int w = 640;
-   int h = 380;
+   int w = 500;
+   int h = 500;
    Canvas drawer(w, h);
    // your code here
    Pixel color1 = {0, 0, 0};
    Pixel color2 = {0, 0, 0};
    drawer.background(color1, color2, VERTICAL);
 
-   drawer.begin(POINTS);
-   for (int i = 0; i < 100; i++)
-   {
-      Pixel randomColor = getRandomColor();
-      drawer.color(randomColor.r, randomColor.g, randomColor.b);
-      Vertex p = getRandomPoint(w, h);
-      drawer.vertex(p.x, p.y);
-   }
+   // // draw points demo
+   // drawer.begin(POINTS);
+   // for (int i = 0; i < 100; i++)
+   // {
+   //    Pixel randomColor = getRandomColor();
+   //    drawer.color(randomColor.r, randomColor.g, randomColor.b);
+   //    Vertex p = getRandomPoint(w, h);
+   //    drawer.vertex(p.x, p.y);
+   // }
+
+   // circle
+   drawer.begin(CIRCLES);
+   drawer.vertex(250, 250);
+   drawer.end();
+
    drawer.end();
    drawer.save("art.png");
 }

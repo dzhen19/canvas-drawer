@@ -162,6 +162,30 @@ void drawPoint(Vertex a, Image *canvas)
    canvas->set(a.y, a.x, a.color);
 }
 
+// TODO: make me variable color / radius
+void drawCircle(Vertex a, Image *canvas)
+{
+   int radius = 100;
+   Pixel color = {255, 255, 255};
+
+   int minX = a.x - radius;
+   int minY = a.y - radius;
+   int maxX = a.x + radius;
+   int maxY = a.y + radius;
+
+   for (int x = minX; x <= maxX; x++)
+   {
+      for (int y = minY; y <= maxY; y++)
+      {
+         float distanceFromOrigin = sqrt((a.x - x) * (a.x - x) + (a.y - y) * (a.y - y));
+         if (distanceFromOrigin < radius)
+         {
+            canvas->set(y, x, color);
+         }
+      }
+   }
+}
+
 void Canvas::end()
 {
    int numVertices = verticesToDraw.size();
@@ -210,6 +234,15 @@ void Canvas::end()
       {
          Vertex a = verticesToDraw[i];
          drawPoint(a, &_canvas);
+      }
+   }
+
+   if (currentType == CIRCLES)
+   {
+      for (int i = 0; i < numVertices; i++)
+      {
+         Vertex a = verticesToDraw[i];
+         drawCircle(a, &_canvas);
       }
    }
 
