@@ -77,6 +77,7 @@ int main(int argc, char **argv)
    Pixel color1 = {16, 0, 43};
    Pixel color2 = {90, 24, 154};
    drawer.background(color1, color2, VERTICAL);
+   drawer.save("bg.png");
 
    // draw points demo
    drawer.begin(POINTS);
@@ -104,19 +105,35 @@ int main(int argc, char **argv)
 
       for (int j = 0; j < numSubCircles; j++)
       {
-         randomColor = getRandomColor(true);
+         randomColor = getRandomColor(false);
          drawer.color(randomColor.r, randomColor.g, randomColor.b);
          drawer.vertex(p.x, p.y);
          drawer.radius(circleRadius - pixDecrement * j);
       }
    }
    drawer.end();
-   drawer.save("space1.png");
+   drawer.save("circles.png");
 
    // draw convex polygon demo
-   drawer.background(0, 0, 0);
-   drawUnitCirclePoints(8, w, h, &drawer);
-   drawer.save("polygon.png");
+
+   for (int i = 4; i < 13; i++)
+   {
+      // i'm going for a space theme here
+      drawer.background(0, 0, 0);
+      drawer.begin(POINTS);
+      for (int i = 0; i < 1000; i++)
+      {
+         Pixel randomColor = getRandomColor(true);
+         drawer.color(randomColor.r, randomColor.g, randomColor.b);
+         Vertex p = getRandomPoint(w, h);
+         drawer.vertex(p.x, p.y);
+      }
+      drawer.end();
+
+      drawUnitCirclePoints(i, w, h, &drawer);
+      // string name = std::format("{0}_lygon", i);
+      drawer.save(std::to_string(i) + ".png");
+   }
 
    // draw rose demo
    // drawer.drawRose();
