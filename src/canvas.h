@@ -18,6 +18,7 @@ namespace agl
       UNDEFINED,
       LINES,
       TRIANGLES,
+      POINTS
    };
 
    enum DirectionType

@@ -157,6 +157,11 @@ void drawTriangle(Vertex a, Vertex b, Vertex c, Image *canvas)
    }
 }
 
+void drawPoint(Vertex a, Image *canvas)
+{
+   canvas->set(a.y, a.x, a.color);
+}
+
 void Canvas::end()
 {
    int numVertices = verticesToDraw.size();
@@ -196,6 +201,15 @@ void Canvas::end()
          Vertex b = verticesToDraw[(3 * i) + 1];
          Vertex c = verticesToDraw[(3 * i) + 2];
          drawTriangle(a, b, c, &_canvas);
+      }
+   }
+
+   if (currentType == POINTS)
+   {
+      for (int i = 0; i < numVertices; i++)
+      {
+         Vertex a = verticesToDraw[i];
+         drawPoint(a, &_canvas);
       }
    }
 
