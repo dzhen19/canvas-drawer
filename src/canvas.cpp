@@ -219,3 +219,49 @@ void Canvas::background(unsigned char r, unsigned char g, unsigned char b)
    Pixel color = {r, g, b};
    _canvas.fill(color);
 }
+
+void Canvas::background(Pixel color1, Pixel color2, DirectionType direction)
+{
+   float canvasWidth = _canvas.width();
+   float canvasHeight = _canvas.height();
+   float t;
+   int r, c;
+
+   // color1 = top, color2 = bottom
+   if (direction == VERTICAL)
+   {
+      for (r = 0; r < canvasHeight; r++)
+      {
+         t = r / canvasHeight;
+         Pixel interpolatedColor = {
+             static_cast<unsigned char>(t * color1.r + (1 - t) * color2.r),
+             static_cast<unsigned char>(t * color1.g + (1 - t) * color2.g),
+             static_cast<unsigned char>(t * color1.b + (1 - t) * color2.b),
+         };
+
+         for (c = 0; c < canvasWidth; c++)
+         {
+            _canvas.set(r, c, interpolatedColor);
+         }
+      }
+   }
+
+   // color1 = left, color2 = right
+   else if (direction == HORIZONTAL)
+   {
+      for (c = 0; c < canvasWidth; c++)
+      {
+         t = c / canvasWidth;
+         Pixel interpolatedColor = {
+             static_cast<unsigned char>(t * color1.r + (1 - t) * color2.r),
+             static_cast<unsigned char>(t * color1.g + (1 - t) * color2.g),
+             static_cast<unsigned char>(t * color1.b + (1 - t) * color2.b),
+         };
+
+         for (r = 0; r < canvasWidth; r++)
+         {
+            _canvas.set(r, c, interpolatedColor);
+         }
+      }
+   }
+}

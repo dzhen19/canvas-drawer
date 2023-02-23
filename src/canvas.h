@@ -17,7 +17,13 @@ namespace agl
    {
       UNDEFINED,
       LINES,
-      TRIANGLES
+      TRIANGLES,
+   };
+
+   enum DirectionType
+   {
+      HORIZONTAL,
+      VERTICAL
    };
 
    struct Vertex
@@ -58,6 +64,9 @@ namespace agl
 
       // Fill the canvas with the given background color
       void background(unsigned char r, unsigned char g, unsigned char b);
+
+      // TODO: Fill the canvas with a gradient
+      void background(Pixel color1, Pixel color2, DirectionType direction);
 
    private:
       Image _canvas;
