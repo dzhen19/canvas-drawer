@@ -2,6 +2,64 @@
 
 Implements a simple drawing api
 
+## How to build
+
+*Windows*
+
+Open git bash to the directory containing this repository.
+
+```
+canvas-drawer $ mkdir build
+canvas-drawer $ cd build
+canvas-drawer/build $ cmake -G "Visual Studio 16 2019" ..
+canvas-drawer/build $ start Draw-2D.sln
+```
+
+Your solution file should contain two projects: `pixmap_art` and `pixmap_test`.
+To run from the git bash command shell, 
+
+```
+canvas-drawer/build $ ../bin/Debug/draw_test
+canvas-drawer/build $ ../bin/Debug/draw_art
+```
+
+*macOS*
+
+Open terminal to the directory containing this repository.
+
+```
+canvas-drawer $ mkdir build
+canvas-drawer $ cd build
+canvas-drawer/build $ cmake ..
+canvas-drawer/build $ make
+```
+
+To run each program from build, you would type
+
+```
+canvas-drawer/build $ ../bin/draw_test
+canvas-drawer/build $ ../bin/draw_art
+```
+
+## Supported primitives
+
+The following primitives are supported: 
+```
+enum PrimitiveType
+{
+   UNDEFINED,
+   LINES,
+   TRIANGLES,
+   POINTS,
+   CIRCLES,
+   CONVEXPOLYGON,
+};
+```
+
+In addition, rose curves can be drawn using many lines. 
+
+## Results
+
 ### Image 1: Space
 
 #### Set background gradient
@@ -64,50 +122,3 @@ void drawConvexPolygon(vector<Vertex> verticesToDraw, Image *canvas)
 ```
 ![Untitled presentation (1)](https://user-images.githubusercontent.com/55254786/221042826-8e9c83d2-4154-4864-876e-3551dd31a229.png)
 
-
-## How to build
-
-*Windows*
-
-Open git bash to the directory containing this repository.
-
-```
-canvas-drawer $ mkdir build
-canvas-drawer $ cd build
-canvas-drawer/build $ cmake -G "Visual Studio 16 2019" ..
-canvas-drawer/build $ start Draw-2D.sln
-```
-
-Your solution file should contain two projects: `pixmap_art` and `pixmap_test`.
-To run from the git bash command shell, 
-
-```
-canvas-drawer/build $ ../bin/Debug/draw_test
-canvas-drawer/build $ ../bin/Debug/draw_art
-```
-
-*macOS*
-
-Open terminal to the directory containing this repository.
-
-```
-canvas-drawer $ mkdir build
-canvas-drawer $ cd build
-canvas-drawer/build $ cmake ..
-canvas-drawer/build $ make
-```
-
-To run each program from build, you would type
-
-```
-canvas-drawer/build $ ../bin/draw_test
-canvas-drawer/build $ ../bin/draw_art
-```
-
-## Supported primitives
-
-TODO: Document the custom primitives supported by your canvas class
-
-## Results
-
-TODO: Show artworks using your class
