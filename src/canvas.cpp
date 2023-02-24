@@ -128,10 +128,10 @@ void drawLine(Vertex a, Vertex b, Image *canvas)
 
 void drawTriangle(Vertex a, Vertex b, Vertex c, Image *canvas)
 {
-   int minX = std::min({a.x, b.x, c.x});
-   int maxX = std::max({a.x, b.x, c.x});
-   int minY = std::min({a.y, b.y, c.y});
-   int maxY = std::max({a.y, b.y, c.y});
+   int minX = std::min(a.x, std::min(b.x, c.x));
+   int maxX = std::max(a.x, std::max(b.x, c.x));
+   int minY = std::min(a.y, std::min(b.y, c.y));
+   int maxY = std::max(a.y, std::max(b.y, c.y));
 
    for (int x = minX; x <= maxX; x++)
    {
@@ -198,7 +198,6 @@ void drawConvexPolygon(vector<Vertex> verticesToDraw, Image *canvas)
 }
 
 // not a primitive, shorthand for drawing a bunch of lines
-// TODO: figure out why this is segfaulting
 void Canvas::drawRose()
 {
    int n = 8;
@@ -208,14 +207,14 @@ void Canvas::drawRose()
 
    begin(LINES);
    color(255, 0, 0);
-   // for (theta = 0; theta < 361; theta++)
-   // {
-   //    k = (float)theta * (float)d * (M_PI / 180);
-   //    r = 300 * sin(n * k);
-   //    x = r * cos(k) + 500;
-   //    y = r * sin(k) + 500;
-   //    vertex(x, y);
-   // }
+   for (theta = 0; theta < 361; theta++)
+   {
+      k = (float)theta * (float)d * (M_PI / 180);
+      r = 300 * sin(n * k);
+      x = r * cos(k) + 500;
+      y = r * sin(k) + 500;
+      vertex(x, y);
+   }
 
    color(0, 255, 0);
    for (theta = 0; theta < 360; theta++)
