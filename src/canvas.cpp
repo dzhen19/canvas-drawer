@@ -51,7 +51,7 @@ void drawLineLow(Vertex a, Vertex b, Image *canvas)
       h = -h;
    }
    int f = 2 * h - w;
-   for (int x = a.x; x <= b.x; x++)
+   for (int x = a.x; x < b.x; x++)
    {
       float drawnDist = sqrt(pow((x - a.x), 2) + pow((y - a.y), 2));
       float t = drawnDist / dist;
@@ -83,7 +83,7 @@ void drawLineHigh(Vertex a, Vertex b, Image *canvas)
       w = -w;
    }
    int f = 2 * w - h;
-   for (int y = a.y; y <= b.y; y++)
+   for (int y = a.y; y < b.y; y++)
    {
       float drawnDist = sqrt(pow((x - a.x), 2) + pow((y - a.y), 2));
       float t = drawnDist / dist;
